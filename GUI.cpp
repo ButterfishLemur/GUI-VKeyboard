@@ -92,11 +92,13 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
         hInstance,                               ////Instanzhandle
         NULL                                    //Zeiger auf zusätzliche Daten für die Fensterprozedur    
     );
-    for (int i = 0; i < 5; i++) {
-
+    for (int i = 0; i < 5; ++i) {
+        wchar_t letter = L'A' + i;
+        wchar_t label[2] = { letter, L'\0' };
+	
         HWND Button = CreateWindow(
             L"BUTTON",  // Predefined class; Unicode assumed 
-            L"A",      // Button text 
+            label,      // Button text 
             WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
             100 * i,         // x position 
             30,         // y position 
