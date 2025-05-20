@@ -35,26 +35,26 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 
 int WINAPI WinMain(                         //Wie wird funktion aufgerufen 
-    _In_ HINSTANCE hInstance,               
+    _In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,       //Schlüssel für vorherige instanz
     _In_ LPSTR     lpCmdLine,               //Befehlsliste was gemacht werden soll. Programm bekommt input bspw 8908 und weiß links drehen
-	_In_ int       nCmdShow                 // Wie soll das erzeugte fenster angezeigt werden //Ohne def standard
+    _In_ int       nCmdShow                 // Wie soll das erzeugte fenster angezeigt werden //Ohne def standard
 )
 {
-	WNDCLASSEX wcex;                                                //wcex Bauanleitung für Fensterklasse nur für lesbarkeit
+    WNDCLASSEX wcex;                                                //wcex Bauanleitung für Fensterklasse nur für lesbarkeit
 
     wcex.cbSize = sizeof(WNDCLASSEX);                               //größe in bytes                               
-	wcex.style = CS_HREDRAW | CS_VREDRAW;                           //Stil Fensterklasse. hier: wenn fenster in der höhe oder breite verändert wird, wird es neu gezeichnet
-	wcex.lpfnWndProc = WndProc;                                     //Zeiger auf die Fensterprozedur, wo werden tastendrücke verarbeitet
-	wcex.cbClsExtra = 0;                                            //Zusätzliche Bytes für die Fensterklasse                
-	wcex.cbWndExtra = 0;                                            //Zusätzliche Bytes für das Fenster                    
-	wcex.hInstance = hInstance;                                     //Handle der Instanz, verwendet um auf resourcen zuzugreifen, die mit Anwendung verbunden sind       
-	wcex.hIcon = LoadIcon(wcex.hInstance, IDI_APPLICATION);         //Icon der Anwendung
-	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);                     //Mauszeiger                
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);                //Hintergrundfarbe des Fensters hier  standard    
-	wcex.lpszMenuName = NULL;                                       //Menü der Anwendung 
-	wcex.lpszClassName = szWindowClass;                             //Name der Fensterklasse ist name des Automodells für verweise auf andere fenster die geleich aussehn sollen
-	wcex.hIconSm = LoadIcon(wcex.hInstance, IDI_APPLICATION);       //Icon der Anwendung
+    wcex.style = CS_HREDRAW | CS_VREDRAW;                           //Stil Fensterklasse. hier: wenn fenster in der höhe oder breite verändert wird, wird es neu gezeichnet
+    wcex.lpfnWndProc = WndProc;                                     //Zeiger auf die Fensterprozedur, wo werden tastendrücke verarbeitet
+    wcex.cbClsExtra = 0;                                            //Zusätzliche Bytes für die Fensterklasse                
+    wcex.cbWndExtra = 0;                                            //Zusätzliche Bytes für das Fenster                    
+    wcex.hInstance = hInstance;                                     //Handle der Instanz, verwendet um auf resourcen zuzugreifen, die mit Anwendung verbunden sind       
+    wcex.hIcon = LoadIcon(wcex.hInstance, IDI_APPLICATION);         //Icon der Anwendung
+    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);                     //Mauszeiger                
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);                //Hintergrundfarbe des Fensters hier  standard    
+    wcex.lpszMenuName = NULL;                                       //Menü der Anwendung 
+    wcex.lpszClassName = szWindowClass;                             //Name der Fensterklasse ist name des Automodells für verweise auf andere fenster die geleich aussehn sollen
+    wcex.hIconSm = LoadIcon(wcex.hInstance, IDI_APPLICATION);       //Icon der Anwendung
 
     if (!RegisterClassEx(&wcex))
     {
@@ -92,49 +92,54 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
         hInstance,                               ////Instanzhandle
         NULL                                    //Zeiger auf zusätzliche Daten für die Fensterprozedur    
     );
+    for (int i = 0; i < 5; i++) {
 
-    HWND Button = CreateWindow(
-        L"BUTTON",  // Predefined class; Unicode assumed 
-        L"A",      // Button text 
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
-        10,         // x position 
-        30,         // y position 
-        100,        // Button width
-        40,        // Button height
-        hWnd,     // Parent window
-        NULL,       // No menu.
-        (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
-        NULL);      // Pointer not needed.
+        HWND Button = CreateWindow(
+            L"BUTTON",  // Predefined class; Unicode assumed 
+            L"A",      // Button text 
+            WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
+            100 * i,         // x position 
+            30,         // y position 
+            100,        // Button width
+            40,        // Button height
+            hWnd,     // Parent window
+            NULL,       // No menu.
+            (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
+            NULL);      // Pointer not needed.
 
 
-    if (!hWnd || !Button)
-    {
-        MessageBox(NULL,
-            _T("Call to CreateWindow failed!"),
-            _T("Windows Desktop Guided Tour"),
-            NULL);
+        if (!hWnd || !Button)
+        {
+            MessageBox(NULL,
+                _T("Call to CreateWindow failed!"),
+                _T("Windows Desktop Guided Tour"),
+                NULL);
 
-        return 1;
+            return 1;
+        }
+
+
+        // The parameters to ShowWindow explained:
+        // hWnd: the value returned from CreateWindow
+        // nCmdShow: the fourth parameter from WinMain
+        ShowWindow(hWnd,
+            nCmdShow);
+        UpdateWindow(hWnd);                          //Updatet window alle par ticks
+
+
     }
-   
-    
-    // The parameters to ShowWindow explained:
-    // hWnd: the value returned from CreateWindow
-    // nCmdShow: the fourth parameter from WinMain
-    ShowWindow(hWnd,
-        nCmdShow);
-    UpdateWindow(hWnd);                          //Updatet window alle par ticks
 
-    // Main message loop:
-	MSG msg;                                     //msg wird hier als Feedback von windows verwendet   
-    while (GetMessage(&msg, NULL, 0, 0))            //Wenn sich eine nachicht in der warteschlange befindet, wird sie in msg gespeichert
-    {
-        TranslateMessage(&msg);                    //Übersetzt Tasteneingaben in Zeichen
-        DispatchMessage(&msg);                     //Sendet die nachricht an die fensterprozedur
-	}
-    
+        // Main message loop:
+        MSG msg;                                     //msg wird hier als Feedback von windows verwendet   
+        while (GetMessage(&msg, NULL, 0, 0))            //Wenn sich eine nachicht in der warteschlange befindet, wird sie in msg gespeichert
+        {
+            TranslateMessage(&msg);                    //Übersetzt Tasteneingaben in Zeichen
+            DispatchMessage(&msg);                     //Sendet die nachricht an die fensterprozedur
+        }
 
-    return (int)msg.wParam;
+
+        return (int)msg.wParam;
+    
 }
 
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -152,6 +157,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)    //wenn message (feedback von windows ist:
     {
     case WM_PAINT:          //programm wird eöfnet 
+        
         hdc = BeginPaint(hWnd, &ps);//kreiere das fenster in dem anderen fenster.
 
         // Here your application is laid out.
