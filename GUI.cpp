@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <tchar.h>
-
+#include <string>
 
 
 // Global variables
@@ -41,7 +41,7 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 	_In_ int       nCmdShow                 // Wie soll das erzeugte fenster angezeigt werden //Ohne def standard
 )
 {
-	WNDCLASSEX wcex;                                                //wcex Bauanleitung für Fensterklasse nur für lesbarkeit
+	WNDCLASSEX wcex = {};                                                //wcex Bauanleitung für Fensterklasse nur für lesbarkeit
 
 	wcex.cbSize = sizeof(WNDCLASSEX);                               //größe in bytes                               
 	wcex.style = CS_HREDRAW | CS_VREDRAW;                           //Stil Fensterklasse. hier: wenn fenster in der höhe oder breite verändert wird, wird es neu gezeichnet
@@ -93,21 +93,63 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 		NULL                                    //Zeiger auf zusätzliche Daten für die Fensterprozedur    
 	);
 
+	//Zeile 1 (Esc,F1 bis F12)
 
-	wchar_t letters[] = { L'Q', L'W', L'E', L'R', L'T' }; // Define the array of letters
+	//zeile 2 (^ Zahlen)
+	
+	//Zeile 3 (Tab, QWERTZ..)
+	//wchar_t letters[] = { L'Q', L'W', L'E', L'R', L'T', L'Z', L'U', L'I',L'O', L'P'}; // Define the array of letters
+	
+	//Aussehen richtige tastatur
+	//array mit arrays
 
-	for (int i = 0; i < 5; ++i) {
+	std::wstring letters[] = {
+	L"ESC",L"F1", L"F2", L"F3", L"F4", L"F5", L"F6", L"F7", L"F8", L"F9", L"F10", L"F11", L"F12",
+	L"^", L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", L"9", L"0", L"ß", L"´",
+	L"TAB", L"Q", L"W", L"E", L"R", L"T", L"Z", L"U", L"I", L"O", L"P", L"Ü", L"+", L"#",
+	L"CAPS LOCK", L"A", L"S", L"D", L"F", L"G", L"H", L"J", L"K", L"L", L"Ö", L"Ä",
+	L"SHIFT", L"<", L"Y", L"X", L"C", L"V", L"B", L"N", L"M", L",", L".", L"-",
+	L"CTRL", L"WIN", L"ALT", L"SPACE", L"ALT GR", L"WIN", L"MENU", L"CTRL",
+	L"PRINT SCREEN", L"SCROLL LOCK", L"PAUSE",
+	L"INSERT", L"HOME", L"PAGE UP",
+	L"DELETE", L"END", L"PAGE DOWN",
+	L"UP", L"DOWN", L"LEFT", L"RIGHT",
+	L"NUM LOCK", L"/", L"*", L"-",
+	L"7", L"8", L"9", L"+",
+	L"4", L"5", L"6",
+	L"1", L"2", L"3", L"ENTER",
+	L"0", L"."
+	};
 
+	//Taste = string mit parametern 
+	//Struktur def. Höhe, breite, abstand, position
 
+	//doppelte vorschleife: läge Array und dann länge _array
 
+	for (int i = 0; i < _countof(letters); ++i) {
+
+		
 		// Fix for C6201: Ensure the buffer size is sufficient and correctly used  
-		wchar_t btnText[2] = { letters[i], L'\0' }; // Null-terminated string  
+		
+        // Replace this line:  
+        // wchar_t btnText[2] = { letters[i], L'\0' }; // Null-terminated string  
+
+        // With the following code:  
+        const wchar_t* btnText = letters[i].c_str(); // Use c_str() to get a null-terminated wchar_t* from std::wstring
+		
+		int ypos = (i / 13)*70 + 70; 
+		int xpos = (i % 13)*100;
+		
+
+
+
+
 		HWND Button = CreateWindow(
 			L"BUTTON",  // Predefined class; Unicode assumed  
 			btnText,    // Use the null-terminated string for the button text  
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles  
-			100 * i,    // x position  
-			30,         // y position  
+			xpos,    // x position 
+			ypos,    // y position  
 			100,        // Button width  
 			40,         // Button height  
 			hWnd,       // Parent window  
@@ -179,7 +221,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// in the top left corner.
 		TextOut(hdc,
 			5, 5,
-			greeting, _tcslen(greeting));
+			greeting,int( _tcslen(greeting)));
 		// End application-specific layout section.
 
 		EndPaint(hWnd, &ps);
