@@ -6,7 +6,8 @@
 #include <string.h>
 #include <tchar.h>
 #include <string>
-
+#include <array>
+#include <vector>
 
 // Global variables
 
@@ -32,6 +33,17 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 //Identifikator ein bestimmtes fenster
 //Gibt eine Nummer an, bspw 1 bed: fenster hat sich geöfnet usw
 //letzten parameter geben an um was es sich bei msg handelt
+
+//Funktion Modifizierter String
+std::wstring ModifyString(const std::wstring& taste, const std::wstring& posx, const std::wstring& posy, const std::wstring& hight, const std::wstring& width) {
+	{
+	
+
+	return posx, posy, hight, width; // Rückgabe des modifizierten Strings
+}
+
+
+
 
 
 int WINAPI WinMain(                         //Wie wird funktion aufgerufen 
@@ -103,55 +115,107 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 	//Aussehen richtige tastatur
 	//array mit arrays
 
-	std::wstring letters[] = {
-	L"ESC",L"F1", L"F2", L"F3", L"F4", L"F5", L"F6", L"F7", L"F8", L"F9", L"F10", L"F11", L"F12",
-	L"^", L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", L"9", L"0", L"ß", L"´",
-	L"TAB", L"Q", L"W", L"E", L"R", L"T", L"Z", L"U", L"I", L"O", L"P", L"Ü", L"+", L"#",
-	L"CAPS LOCK", L"A", L"S", L"D", L"F", L"G", L"H", L"J", L"K", L"L", L"Ö", L"Ä",
-	L"SHIFT", L"<", L"Y", L"X", L"C", L"V", L"B", L"N", L"M", L",", L".", L"-",
-	L"CTRL", L"WIN", L"ALT", L"SPACE", L"ALT GR", L"WIN", L"MENU", L"CTRL",
-	L"PRINT SCREEN", L"SCROLL LOCK", L"PAUSE",
-	L"INSERT", L"HOME", L"PAGE UP",
-	L"DELETE", L"END", L"PAGE DOWN",
-	L"UP", L"DOWN", L"LEFT", L"RIGHT",
-	L"NUM LOCK", L"/", L"*", L"-",
-	L"7", L"8", L"9", L"+",
-	L"4", L"5", L"6",
-	L"1", L"2", L"3", L"ENTER",
-	L"0", L"."
-	};
+
+	std::vector<std::wstring> parameterbutton = {10,10,600,60};
+
+
+	std::vector<std::vector<std::wstring>>ArrayOfArrays;
+	//Zeile 1 (Startet mit Esc und mit F12)
+	//Unterteilung in 4 Stücke (Esc[größe ändern], 3x4 F-Tasten[Standard])
+	//esc
+	//F1 bis F12 (sequenz alle 4 Tasten Abstand von 1 Taste)
+	std::vector<std::wstring>zeile1 = { L"ESC",L"F1", L"F2", L"F3", L"F4", L"F5", L"F6", L"F7", L"F8", L"F9", L"F10", L"F11", L"F12"};
+	
+	//zeile2 (Startet mit ^ und endet mit BACK)
+	//keine Unterteilung, nur BACK taste doppelt so lang wie normal
+	std::vector<std::wstring>zeile2 = { L"^", L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", L"9", L"0", L"ß", L"´",L"BACK" };
+
+	//zeile3 (Startet mit Tab und endet mit +)
+	//Tab länger, rest normal
+	std::vector<std::wstring>zeile3 = { L"TAB", L"Q", L"W", L"E", L"R", L"T", L"Z", L"U", L"I", L"O", L"P", L"Ü", L"+" };
+	
+	//zeile4 (Startet mit Caps und endet mit #)
+	//Caps länger als normal, rest normal
+	std::vector<std::wstring>zeile4 = { L"CAPS LOCK", L"A", L"S", L"D", L"F", L"G", L"H", L"J", L"K", L"L", L"Ö", L"Ä",L"#" };
+
+	//zeile5 (Startet mit lShift und endet mit rShift)
+	//normal, rshift doppelt so lang wie normal
+	std::vector<std::wstring>zeile5 = { L"LSHIFT", L"<", L"Y", L"X", L"C", L"V", L"B", L"N", L"M", L",", L".", L"-",L"RSHIFT" };
+
+	//zeile6 (Startet mit lCtrl und endet mit rCtrl)
+	//alle tastenlängen x 1.3, außer Space länge 6x normal
+	std::vector<std::wstring>zeile6 = { L"CTRL", L"WIN", L"ALT", L"SPACE", L"ALT GR", L"WIN", L"MENU", L"CTRL" };
+
+
+	//zeilen Arays werden in ArrayOfArrays gespeichert
+	ArrayOfArrays.push_back(zeile1);
+	ArrayOfArrays.push_back(zeile2);
+	ArrayOfArrays.push_back(zeile3);
+	ArrayOfArrays.push_back(zeile4);
+	ArrayOfArrays.push_back(zeile5);
+	ArrayOfArrays.push_back(zeile6);
+
+
+	
+	//Modifizieren der strinparamert
+
+	for(auto& zeile : ArrayOfArrays) {
+		for(auto& taste : zeile) {
+			taste = ModifyString(posx, posy, hight, width); //Modifizieren der strinparamert 
+		}
+	}
+
+		
+
+
+
+
+
+	for (int i = 0; i < _countof(ArrayOfArrays); ++i) {
+
+
+		// Fix for C6201: Ensure the buffer size is sufficient and correctly used  
+
+		// Replace this line:  
+		// wchar_t btnText[2] = { letters[i], L'\0' }; // Null-terminated string  
+
+		// With the following code:  
+		const wchar_t* btnText = ArrayOfArrays[i].c_str(); // Use c_str() to get a null-terminated wchar_t* from std::wstring
+
+		int ypos = (i / 13) * 70 + 70;
+		int xpos = (i % 13) * 100;
+
+
+
+
+	//Modifizieren der strinparamert 
+	
+	
+
+	
 
 	//Taste = string mit parametern 
 	//Struktur def. Höhe, breite, abstand, position
 
+
+	//Ich will : den array positionen 4 Parameter zuordnen, wie die TAB taste ist länger als die ander, Q ist normal usw
+
 	//doppelte vorschleife: läge Array und dann länge _array
 
-	for (int i = 0; i < _countof(letters); ++i) {
-
-		
-		// Fix for C6201: Ensure the buffer size is sufficient and correctly used  
-		
-        // Replace this line:  
-        // wchar_t btnText[2] = { letters[i], L'\0' }; // Null-terminated string  
-
-        // With the following code:  
-        const wchar_t* btnText = letters[i].c_str(); // Use c_str() to get a null-terminated wchar_t* from std::wstring
-		
-		int ypos = (i / 13)*70 + 70; 
-		int xpos = (i % 13)*100;
-		
+	
 
 
 
 
 		HWND Button = CreateWindow(
 			L"BUTTON",  // Predefined class; Unicode assumed  
-			btnText,    // Use the null-terminated string for the button text  
+			btnText,    // Use the null-terminated string for the button text  //ArrayOfArrays wird ausgelesen : L"X"
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles  
-			xpos,    // x position 
-			ypos,    // y position  
-			100,        // Button width  
-			40,         // Button height  
+			xpos,    // x position												//parameter für die positionx (abstand)
+			ypos,    // y position												//parameter für die positiony	
+			100,        // Button width											//parameter für die breite
+			40,         // Button height										//parameter für die höhe
+			(HWND)hWnd,       // Parent window
 			hWnd,       // Parent window  
 			NULL,       // No menu  
 			(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
