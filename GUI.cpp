@@ -34,14 +34,17 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 //Gibt eine Nummer an, bspw 1 bed: fenster hat sich geöfnet usw
 //letzten parameter geben an um was es sich bei msg handelt
 
+
+//x,y position des fensters	braucht man nicht, Offset:
+
 //Funktion Modifizierter String
-std::wstring ModifyString(const std::wstring& taste, const std::wstring& posx, const std::wstring& posy, const std::wstring& hight, const std::wstring& width) {
-	{
-	
-
-	return posx, posy, hight, width; // Rückgabe des modifizierten Strings
-}
-
+struct ButtonInfo {
+	std::wstring text; // Text des Buttons
+	int x; // x-Position des Buttons
+	int y; // y-Position des Buttons
+	int width; // Breite des Buttons
+	int height; // Höhe des Buttons
+};
 
 
 
@@ -81,171 +84,47 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 	// Store instance handle in our global variable
 	hInst = hInstance;
 
-	// The parameters to CreateWindowEx explained:
-	// WS_EX_OVERLAPPEDWINDOW : An optional extended window style.
-	// szWindowClass: the name of the application
-	// szTitle: the text that appears in the title bar
-	// WS_OVERLAPPEDWINDOW: the type of window to create
-	// CW_USEDEFAULT, CW_USEDEFAULT: initial position (x, y)
-	// 500, 100: initial size (width, length)
-	// NULL: the parent of this window
-	// NULL: this application does not have a menu bar
-	// hInstance: the first parameter from WinMain
-	// NULL: not used in this application
 	HWND hWnd = CreateWindowEx(
-		WS_EX_OVERLAPPEDWINDOW,                 //erweiterter fensterstil mit Titelleiste usw 
-		szWindowClass,                          //Fenster soll so aussehen wie oben defiiert    
-		szTitle,                                //Titel des fensters    
-		WS_OVERLAPPEDWINDOW,                    //Fensterstil: Überlappendes Fenster    
-		CW_USEDEFAULT, CW_USEDEFAULT,           // //Position des Fensters
-		300, 150,                               // //Größe des Fensters
-		NULL,                                   //übergeordnetes Fenster
-		NULL,                                   ////kein Menü
-		hInstance,                               ////Instanzhandle
-		NULL                                    //Zeiger auf zusätzliche Daten für die Fensterprozedur    
+		WS_EX_OVERLAPPEDWINDOW,
+		szWindowClass,
+		szTitle,
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		300, 150,
+		NULL,
+		NULL,
+		hInstance,
+		NULL
 	);
 
-	//Zeile 1 (Esc,F1 bis F12)
-
-	//zeile 2 (^ Zahlen)
-	
-	//Zeile 3 (Tab, QWERTZ..)
-	//wchar_t letters[] = { L'Q', L'W', L'E', L'R', L'T', L'Z', L'U', L'I',L'O', L'P'}; // Define the array of letters
-	
-	//Aussehen richtige tastatur
-	//array mit arrays
-
-
-	std::vector<std::wstring> parameterbutton = {10,10,600,60};
-
-
-	std::vector<std::vector<std::wstring>>ArrayOfArrays;
-	//Zeile 1 (Startet mit Esc und mit F12)
-	//Unterteilung in 4 Stücke (Esc[größe ändern], 3x4 F-Tasten[Standard])
-	//esc
-	//F1 bis F12 (sequenz alle 4 Tasten Abstand von 1 Taste)
-	std::vector<std::wstring>zeile1 = { L"ESC",L"F1", L"F2", L"F3", L"F4", L"F5", L"F6", L"F7", L"F8", L"F9", L"F10", L"F11", L"F12"};
-	
-	//zeile2 (Startet mit ^ und endet mit BACK)
-	//keine Unterteilung, nur BACK taste doppelt so lang wie normal
-	std::vector<std::wstring>zeile2 = { L"^", L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", L"9", L"0", L"ß", L"´",L"BACK" };
-
-	//zeile3 (Startet mit Tab und endet mit +)
-	//Tab länger, rest normal
-	std::vector<std::wstring>zeile3 = { L"TAB", L"Q", L"W", L"E", L"R", L"T", L"Z", L"U", L"I", L"O", L"P", L"Ü", L"+" };
-	
-	//zeile4 (Startet mit Caps und endet mit #)
-	//Caps länger als normal, rest normal
-	std::vector<std::wstring>zeile4 = { L"CAPS LOCK", L"A", L"S", L"D", L"F", L"G", L"H", L"J", L"K", L"L", L"Ö", L"Ä",L"#" };
-
-	//zeile5 (Startet mit lShift und endet mit rShift)
-	//normal, rshift doppelt so lang wie normal
-	std::vector<std::wstring>zeile5 = { L"LSHIFT", L"<", L"Y", L"X", L"C", L"V", L"B", L"N", L"M", L",", L".", L"-",L"RSHIFT" };
-
-	//zeile6 (Startet mit lCtrl und endet mit rCtrl)
-	//alle tastenlängen x 1.3, außer Space länge 6x normal
-	std::vector<std::wstring>zeile6 = { L"CTRL", L"WIN", L"ALT", L"SPACE", L"ALT GR", L"WIN", L"MENU", L"CTRL" };
-
-
-	//zeilen Arays werden in ArrayOfArrays gespeichert
-	ArrayOfArrays.push_back(zeile1);
-	ArrayOfArrays.push_back(zeile2);
-	ArrayOfArrays.push_back(zeile3);
-	ArrayOfArrays.push_back(zeile4);
-	ArrayOfArrays.push_back(zeile5);
-	ArrayOfArrays.push_back(zeile6);
-
-
-	
-	//Modifizieren der strinparamert
-
-	for(auto& zeile : ArrayOfArrays) {
-		for(auto& taste : zeile) {
-			taste = ModifyString(posx, posy, hight, width); //Modifizieren der strinparamert 
-		}
+	if (!hWnd) {
+		MessageBox(NULL, _T("Call to CreateWindowEx failed!"), _T("Fehler"), MB_ICONERROR);
+		return 1;
 	}
 
-		
+	//Parameter und Texte für button
+	std::vector<ButtonInfo> buttonInfos = {
+		{L"Q", 10, 40, 50, 30},{L"W", 50, 40, 50, 30},{L"E", 90, 40, 50, 30}
+	};
 
+	//Button erstellen
 
-
-
-
-	for (int i = 0; i < _countof(ArrayOfArrays); ++i) {
-
-
-		// Fix for C6201: Ensure the buffer size is sufficient and correctly used  
-
-		// Replace this line:  
-		// wchar_t btnText[2] = { letters[i], L'\0' }; // Null-terminated string  
-
-		// With the following code:  
-		const wchar_t* btnText = ArrayOfArrays[i].c_str(); // Use c_str() to get a null-terminated wchar_t* from std::wstring
-
-		int ypos = (i / 13) * 70 + 70;
-		int xpos = (i % 13) * 100;
-
-
-
-
-	//Modifizieren der strinparamert 
-	
-	
-
-	
-
-	//Taste = string mit parametern 
-	//Struktur def. Höhe, breite, abstand, position
-
-
-	//Ich will : den array positionen 4 Parameter zuordnen, wie die TAB taste ist länger als die ander, Q ist normal usw
-
-	//doppelte vorschleife: läge Array und dann länge _array
-
-	
-
-
-
-
-		HWND Button = CreateWindow(
-			L"BUTTON",  // Predefined class; Unicode assumed  
-			btnText,    // Use the null-terminated string for the button text  //ArrayOfArrays wird ausgelesen : L"X"
-			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles  
-			xpos,    // x position												//parameter für die positionx (abstand)
-			ypos,    // y position												//parameter für die positiony	
-			100,        // Button width											//parameter für die breite
-			40,         // Button height										//parameter für die höhe
-			(HWND)hWnd,       // Parent window
-			hWnd,       // Parent window  
-			NULL,       // No menu  
-			(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
-			NULL        // Pointer not needed  
+	for (size_t i = 0; i < buttonInfos.size(); ++i) {
+		const ButtonInfo& info = buttonInfos[i];
+		CreateWindowW(
+			L"BUTTON",
+			info.text.c_str(),
+			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+			info.x, info.y, info.width, info.height,
+			hWnd,
+			(HMENU)(INT_PTR)(100 + i), // eindeutige ID
+			hInst,
+			NULL
 		);
-
-		// Fix for E0167: Use a null-terminated string (btnText) instead of a single wchar_t (letters[i])
-
-		if (!hWnd || !Button)
-		{
-			MessageBox(NULL,
-				_T("Call to CreateWindow failed!"),
-				_T("Windows Desktop Guided Tour"),
-				NULL);
-
-			return 1;
-		}
-
-		ShowWindow(hWnd, nCmdShow);
-		UpdateWindow(hWnd);
 	}
 
-
-
-	// The parameters to ShowWindow explained:
-	// hWnd: the value returned from CreateWindow
-	// nCmdShow: the fourth parameter from WinMain
-							//Updatet window alle par ticks
-
-
+	ShowWindow(hWnd, nCmdShow);
+	UpdateWindow(hWnd);
 
 
 // Main message loop:
@@ -268,7 +147,7 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 //
 //  WM_PAINT    - Paint the main window
 //  WM_DESTROY  - post a quit message and return
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;                                        // Struktur wie sieht es aus?
 	HDC hdc;                                            // Was ist es für ein endgerät?
