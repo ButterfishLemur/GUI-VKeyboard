@@ -1,4 +1,4 @@
-// HelloWindowsDesktop.cpp
+﻿// HelloWindowsDesktop.cpp
 // compile with: /D_UNICODE /DUNICODE /DWIN32 /D_WINDOWS /c
 
 #include <windows.h>
@@ -104,7 +104,7 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 		szTitle,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		800, 350,							//position letztes taste abgreifen lies: höhe und breite des fensters sind dynamisch mit den tasten
+		1000, 350,							//position letztes taste abgreifen lies: höhe und breite des fensters sind dynamisch mit den tasten
 		NULL,
 		NULL,
 		hInstance,
@@ -126,27 +126,27 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 	// Tastatur-Layout: Zeilen, Tasten
 	std::vector<std::vector<std::wstring>> keyboardRows = {
 		{ L"ESC",L"F1", L"F2", L"F3", L"F4", L"F5", L"F6", L"F7", L"F8", L"F9", L"F10", L"F11", L"F12"}, 
-		{ L"^", L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", L"9", L"0", L"ß", L"´",L"BACK" },
-		{ L"TAB", L"Q", L"W", L"E", L"R", L"T", L"Z", L"U", L"I", L"O", L"P", L"Ü", L"+" ,L"RETURN"},
+		{ L"^", L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", L"9", L"0", L"ß", L"´",L"BACK" ,L"INSERT", L"HOME", L"PAGE UP"},
+		{ L"TAB", L"Q", L"W", L"E", L"R", L"T", L"Z", L"U", L"I", L"O", L"P", L"Ü", L"+" ,L"RETURN", L"DELETE", L"END", L"PAGE DOWN" },
 		{ L"CAPS LOCK", L"A", L"S", L"D", L"F", L"G", L"H", L"J", L"K", L"L", L"Ö", L"Ä",L"#" },
-		{ L"LSHIFT", L"<", L"Y", L"X", L"C", L"V", L"B", L"N", L"M", L",", L".", L"-",L"RSHIFT" },
-		{ L"LCTRL", L"LWIN", L"ALT", L"SPACE", L"ALT GR", L"RWIN", L"MENU", L"RCTRL" }
+		{ L"LSHIFT", L"<", L"Y", L"X", L"C", L"V", L"B", L"N", L"M", L",", L".", L"-",L"RSHIFT" ,L"ARROW UP"},
+		{ L"LCTRL", L"LWIN", L"ALT", L"SPACE", L"ALT GR", L"RWIN", L"MENU", L"RCTRL", L"ARROW LEFT", L"ARROW DOWN", L"ARROW RIGHT"}
 	};
 
 	// Beispiel: Zwei benutzerdefinierte Tasten
-	
+	int abstBlock2 = 20;
         // Update the initialization of the `customButtons` vector to ensure proper construction of `CustomButton` objects.  
         std::vector<CustomButton> customButtons = {  
             {L"ESC", startX, startY, 60, defaultHeight, spacing+45},  
 			{L"F4", startX, startY, defaultWidth, defaultHeight, spacing+45},
 			{L"F8", startX, startY, defaultWidth,defaultHeight, spacing + 45 },
-            {L"BACK", startX, startY, 150, defaultHeight, spacing},  
+            {L"BACK", startX, startY, 150, defaultHeight, abstBlock2},
             {L"TAB", startX, startY, 60, defaultHeight, spacing},  
 			{L"+", startX, startY, 60, defaultHeight, spacing+15},
-			{L"RETURN", startX, startY, 95, 2*defaultHeight+5,spacing},
+			{L"RETURN", startX, startY, 95, 2*defaultHeight+5,abstBlock2},
             {L"CAPS LOCK", startX, startY, 90, defaultHeight, spacing},  
             {L"LSHIFT", startX, startY, 55, defaultHeight, spacing},  
-            {L"RSHIFT", startX, startY, 180, defaultHeight, spacing},  
+            {L"RSHIFT", startX, startY, 180, defaultHeight, abstBlock2+45},
             {L"SPACE", startX, startY, 240, defaultHeight, spacing}  ,
 			{ L"LCTRL", startX, startY, 65, defaultHeight, spacing },
 			{ L"LWIN", startX, startY, 65, defaultHeight, spacing },
@@ -154,10 +154,13 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 			{ L"ALT GR", startX, startY, 65, defaultHeight, spacing },
 			{ L"RWIN", startX, startY, 65, defaultHeight, spacing },
 			{ L"MENU", startX, startY, 65, defaultHeight, spacing },
-			{ L"RCTRL", startX, startY, 70, defaultHeight, spacing },
+			{ L"RCTRL", startX, startY, 70, defaultHeight, abstBlock2 },
 		
 		
 			//Block2
+			
+
+
 
 
 			//Num
@@ -195,9 +198,17 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 	}
 
 	// Button-Erstellung
+
+
+	 HFONT hFont = CreateFontW(
+		18, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+		DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI"
+	);
+	
 	for (size_t i = 0; i < flatButtons.size(); ++i) {
 		const ButtonInfo& info = flatButtons[i];
-		CreateWindowW(
+		HWND btnHwnd = CreateWindowW(
 			L"BUTTON",
 			info.text.c_str(),
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
@@ -207,6 +218,12 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 			hInst,
 			NULL
 		);
+
+		// Schriftart für den Button setzen
+		SendMessage(btnHwnd, WM_SETFONT, (WPARAM)hFont, TRUE);
+
+			
+		
 	}
 
 	ShowWindow(hWnd, nCmdShow);
@@ -233,7 +250,7 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 //
 //  WM_PAINT    - Paint the main window
 //  WM_DESTROY  - post a quit message and return
-static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;                                        // Struktur wie sieht es aus?
 	HDC hdc;                                            // Was ist es für ein endgerät?
