@@ -94,14 +94,17 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 
 	// Store instance handle in our global variable
 	hInst = hInstance;
+	
+	
 
 	HWND hWnd = CreateWindowEx(
+
 		WS_EX_OVERLAPPEDWINDOW,
 		szWindowClass,
 		szTitle,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		300, 300,							//position letztes taste abgreifen lies: höhe und breite des fensters sind dynamisch mit den tasten
+		800, 350,							//position letztes taste abgreifen lies: höhe und breite des fensters sind dynamisch mit den tasten
 		NULL,
 		NULL,
 		hInstance,
@@ -122,7 +125,7 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 
 	// Tastatur-Layout: Zeilen, Tasten
 	std::vector<std::vector<std::wstring>> keyboardRows = {
-		{ L"ESC",L"F1", L"F2", L"F3", L"F4", L"F5", L"F6", L"F7", L"F8", L"F9", L"F10", L"F11", L"F12"},
+		{ L"ESC",L"F1", L"F2", L"F3", L"F4", L"F5", L"F6", L"F7", L"F8", L"F9", L"F10", L"F11", L"F12"}, 
 		{ L"^", L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", L"9", L"0", L"ß", L"´",L"BACK" },
 		{ L"TAB", L"Q", L"W", L"E", L"R", L"T", L"Z", L"U", L"I", L"O", L"P", L"Ü", L"+" ,L"RETURN"},
 		{ L"CAPS LOCK", L"A", L"S", L"D", L"F", L"G", L"H", L"J", L"K", L"L", L"Ö", L"Ä",L"#" },
@@ -139,7 +142,8 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 			{L"F8", startX, startY, defaultWidth,defaultHeight, spacing + 45 },
             {L"BACK", startX, startY, 150, defaultHeight, spacing},  
             {L"TAB", startX, startY, 60, defaultHeight, spacing},  
-			{L"RETURN", startX, startY, 130, 2*defaultHeight+5, spacing},
+			{L"+", startX, startY, 60, defaultHeight, spacing+15},
+			{L"RETURN", startX, startY, 95, 2*defaultHeight+5,spacing},
             {L"CAPS LOCK", startX, startY, 90, defaultHeight, spacing},  
             {L"LSHIFT", startX, startY, 55, defaultHeight, spacing},  
             {L"RSHIFT", startX, startY, 180, defaultHeight, spacing},  
@@ -153,6 +157,11 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 			{ L"RCTRL", startX, startY, 70, defaultHeight, spacing },
 		
 		
+			//Block2
+
+
+			//Num
+
 		
 {
 		   
