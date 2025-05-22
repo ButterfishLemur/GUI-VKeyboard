@@ -39,6 +39,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 //Funktion Modifizierter String
 struct ButtonInfo {
+
 	std::wstring text; // Text des Buttons
 	int x; // x-Position des Buttons
 	int y; // y-Position des Buttons
@@ -90,7 +91,7 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 		szTitle,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		300, 150,
+		300, 300,							//position letztes taste abgreifen lies: höhe und breite des fensters sind dynamisch mit den tasten
 		NULL,
 		NULL,
 		hInstance,
@@ -102,22 +103,42 @@ int WINAPI WinMain(                         //Wie wird funktion aufgerufen
 		return 1;
 	}
 
-	//Parameter und Texte für button
-	std::vector<ButtonInfo> buttonInfos = {
-		{L"Q", 10, 40, 50, 30},{L"W", 50, 40, 50, 30},{L"E", 90, 40, 50, 30}
+	//Standard Werte
+	const int width = 40;
+	const int height = 30;
+	const int spacing = 5;
+	const int startX = 10;
+	const int startY = 40;
+
+	// Tastatur-Layout: Zeilen, Tasten, istSondertaste
+	std::vector<std::vector<std::pair<std::wstring, bool>>> keyboardRows = {
+		{ {L"Q", false}, {L"W", false}, {L"E", false} },
+		{ {L"A", false}, {L"S", false}, {L"D", false} },
+		{ {L"Z", false}, {L"X", false}, {L"C", false} }
 	};
 
-	//Button erstellen
+	std::vector<ButtonInfo> flatButtons;
+	int y = startY;
+	for (const auto& row : keyboardRows) {
+		int x = startX;
+		for (const auto& key : row) {
+			int w = key.second ? width * 2 + spacing : width; // Sondertaste doppelt so breit
+			flatButtons.push_back({ key.first, x, y, w, height });
+			x += w + spacing;
+		}
+		y += height + spacing;
+	}
 
-	for (size_t i = 0; i < buttonInfos.size(); ++i) {
-		const ButtonInfo& info = buttonInfos[i];
+	// Button-Erstellung
+	for (size_t i = 0; i < flatButtons.size(); ++i) {
+		const ButtonInfo& info = flatButtons[i];
 		CreateWindowW(
 			L"BUTTON",
 			info.text.c_str(),
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
 			info.x, info.y, info.width, info.height,
 			hWnd,
-			(HMENU)(INT_PTR)(100 + i), // eindeutige ID
+			(HMENU)(INT_PTR)(100 + i),
 			hInst,
 			NULL
 		);
